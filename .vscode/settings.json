@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "bitset": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "memory": "cpp",
+        "random": "cpp",
+        "ranges": "cpp"
+    },
+    "editor.detectIndentation": false
+}
