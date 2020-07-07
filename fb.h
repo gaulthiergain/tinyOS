@@ -35,8 +35,6 @@ struct framebuffer{
 
 void fb_init(void);
 void fb_clean_screen(void);
-void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned char bg);
-void fb_move_cursor(unsigned char pos);
 void fb_change_color(unsigned char fg, unsigned char bg); 
 void fb_write(unsigned char *buf, unsigned short len);
 
