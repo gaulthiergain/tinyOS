@@ -43,8 +43,14 @@ void fb_write(unsigned char *buf, unsigned short len){
 	unsigned char fg = curr_color & 0xF0;
 	unsigned char bg = curr_color & 0x0F;
 	for (i = 0; i < len; ++i){
-		fb_write_cell(cursor_idx, buf[i], fg, bg);
-		cursor_idx = (cursor_idx + 1) % FB_NUM_CELLS;
+        if (buf[i] == '\n'){
+            cursor_idx += FB_TERM_WIDTH;
+            cursor_idx -= (cursor_idx % FB_TERM_WIDTH);
+            cursor_idx--;
+        }else{
+            fb_write_cell(cursor_idx, buf[i], fg, bg);
+            cursor_idx = (cursor_idx + 1) % FB_NUM_CELLS;
+        }
 	}
 	fb_move_cursor(cursor_idx - 1);
 }
