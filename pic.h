@@ -1,12 +1,12 @@
 #ifndef _PIC_H
 #define _PIC_H
 
-#define PIC_1		0x20		/* IO base address for master PIC */
-#define PIC_2		0xA0		/* IO base address for slave PIC */
+#define PIC_1           0x20        /* IO base address for master PIC */
+#define PIC_2           0xA0        /* IO base address for slave PIC */
 #define PIC_1_COMMAND	PIC_1
-#define PIC_1_DATA	(PIC_1+1)
+#define PIC_1_DATA	    (PIC_1+1)
 #define PIC_2_COMMAND	PIC_2
-#define PIC_2_DATA	(PIC_2+1)
+#define PIC_2_DATA	    (PIC_2+1)
 
 #define PIC_1_OFFSET 0x20
 #define PIC_2_OFFSET 0x28

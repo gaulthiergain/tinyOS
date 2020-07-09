@@ -3,16 +3,16 @@
 #include "gdt.h"
 #include "interrupt.h"
 
-void kmain(){
+int kmain(unsigned int ebx){
     unsigned char message[] = "GauOS";
     
     fb_init();
     fb_clean_screen();
     fb_write(message, sizeof(message));
-    //serial_init();                // init serial (with bochs)
-    //serial_write(s, sizeof(s));   // write on serial (with bochs)
+    //serial_init();
+    //serial_write(message, sizeof(message));
     gdt_init();
     interrupts_install_idt();
 
-    while(1);
+    return ebx;
 }

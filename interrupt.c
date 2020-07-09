@@ -52,8 +52,6 @@ unsigned int interrupt, __attribute__((unused)) struct stack_state stack){
     unsigned char scan_code;
     unsigned char ascii;
 
-    unsigned char msg[] = "received interrupt";
-
     switch (interrupt){
         
         case INTERRUPTS_KEYBOARD:
