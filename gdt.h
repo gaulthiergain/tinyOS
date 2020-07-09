@@ -1,32 +1,24 @@
 #ifndef _GDT_H
 #define _GDT_H
 
-#define NUM_GDT_ENTRIES 3
-#define SEGMENT_BASE    0
-#define SEGMENT_LIMIT   0xFFFFF
-#define CODE_RX_TYPE    0xA
-#define DATA_RW_TYPE    0x2
-#define PL0             0x0
-#define PL1             0x3
-
-struct gdt{
-    unsigned int	address;
-    unsigned short	size;
+struct GDT {
+    unsigned short size;
+    unsigned int address;
 } __attribute__((packed));
 
-struct gdt_entry{
-    unsigned short	limit;
-    unsigned short	base1;
-    unsigned char	base2;
-    unsigned char	dpl;
-    unsigned char	limit2;
-    unsigned char	base3;
+struct GDTDescriptor{
+    unsigned short limit_low;
+    unsigned short base_low;
+    unsigned char base_middle;
+    unsigned char access_byte;
+    unsigned char limit_and_flags;
+    unsigned char base_high;
 } __attribute__((packed));
-
-typedef unsigned short  gdt_selector;
 
 void gdt_init(void);
 
-extern void load_gdt(struct gdt g);
+// Wrappers around ASM.
+void segments_load_gdt(struct GDT gdt);
+void segments_load_registers();
 
 #endif /* _GDT_H */

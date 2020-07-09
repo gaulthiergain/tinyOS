@@ -5,7 +5,19 @@
         "iterator": "cpp",
         "memory": "cpp",
         "random": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "system_error": "c",
+        "__hash_table": "c",
+        "__split_buffer": "c",
+        "array": "c",
+        "deque": "c",
+        "initializer_list": "c",
+        "queue": "c",
+        "string": "c",
+        "string_view": "c",
+        "unordered_map": "c",
+        "utility": "c",
+        "vector": "c"
     },
     "editor.detectIndentation": false
 }

@@ -1,21 +1,20 @@
-global load_gdt
-; load_gdt - loads the GDT
-; stack - [esp + 4] the GDT descriptor
-;	[esp] the return address
-load_gdt:
-    mov eax, [esp + 4]
-    lgdt [eax]
+;Load the Global Descriptor Table
+
+global segments_load_gdt
+global segments_load_registers
+
+segments_load_gdt:
+    lgdt [esp + 4]
     ret
 
-	; the jmp to 0x08 will load the CS register
-    jmp 0x08:.reload_segments
-
-.reload_segments:
-    ; one segment for data
+segments_load_registers:
     mov ax, 0x10
-    mov ds, ax
+    mov ds, ax ; 0x10 - an offset into GDT for the third (kernel data segment) record.
     mov ss, ax
     mov es, ax
-    mov gs, ax
     mov fs, ax
+    mov gs, ax
+    jmp 0x08:flush_cs ; 0x08 - an offset into GDT for the second (kernel code segment) record. 
+
+flush_cs:
     ret
