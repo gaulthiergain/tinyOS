@@ -7,7 +7,7 @@
 #include "common.h"
 
 int kmain(unsigned int ebx){
-    char message[] = "ToysKernel\n";
+    char message[] = "tinyKernel\n";
     
     serial_init();
 
