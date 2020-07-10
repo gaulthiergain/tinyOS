@@ -32,7 +32,7 @@ struct page {
 } __attribute__((packed));
 typedef struct page page_t;
 
-void handle_page_fault(void);
+void handle_page_fault(struct stack_state stack);
 void init_paging(void);
 
 #endif

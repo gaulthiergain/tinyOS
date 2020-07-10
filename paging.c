@@ -1,3 +1,4 @@
+#include "idt.h"
 #include "paging.h"
 #include "serial.h"
 #include "kheap.h"
@@ -36,11 +37,27 @@ static void clear_frame(u32int addr) {
   frame_allocations[frame_word] &= ~(1 << bit_offset);
 }*/
 
-/*registers_t regs*/
-void handle_page_fault(void) {
+void handle_page_fault(struct stack_state stack) {
     debug("Page fault!");
-    unsigned char msg[] = "Page Fault";
-    serial_write(msg, sizeof(msg));
+
+    u32int faulting_address;
+
+     // The faulting address is stored in the CR2 register.
+    asm volatile("mov %%cr2, %0" : "=r" (faulting_address));
+   
+    // The error code gives us details of what happened.
+    int present     = !(stack.error_code    & 0x1); // Page not present
+    int rw          = stack.error_code      & 0x2;  // Write operation?
+    int us          = stack.error_code      & 0x4;  // Processor was in user-mode?
+    int reserved    = stack.error_code      & 0x8;  // Overwritten CPU-reserved bits of page entry?
+    //int id          = stack.error_code      & 0x10; // Caused by an instruction fetch?
+
+    // Output an error message.
+    debug("\nFaulting address %x\n", faulting_address); 
+    if (present) {  debug("present ");}
+    if (rw) {       debug("read-only ");}
+    if (us) {       debug("user-mode ");}
+    if (reserved) { debug("reserved ");}
 }
 
 #define PAGE_READONLY   0

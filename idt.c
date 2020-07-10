@@ -47,8 +47,7 @@ void idt_init(void){
 
 /* Interrupt handlers ********************************************************/
 
-void interrupt_handler(__attribute__((unused)) struct cpu_state cpu, 
-unsigned int interrupt, __attribute__((unused)) struct stack_state stack){
+void interrupt_handler(__attribute__((unused)) struct cpu_state cpu, unsigned int interrupt, struct stack_state stack){
     unsigned char scan_code;
     unsigned char ascii;
 
@@ -75,7 +74,7 @@ unsigned int interrupt, __attribute__((unused)) struct stack_state stack){
             break;
         
         case INTERRUPTS_PAGING:
-            handle_page_fault();
+            handle_page_fault(stack);
             pic_acknowledge(interrupt);
             break;
         default:
