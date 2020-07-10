@@ -3,6 +3,7 @@
 #include "gdt.h"
 #include "idt.h"
 #include "log.h"
+#include "paging.h"
 #include "common.h"
 
 int kmain(unsigned int ebx){
@@ -11,7 +12,6 @@ int kmain(unsigned int ebx){
     serial_init();
 
     fb_clear();
-    fb_write(message, sizeof(message));
     
     info("initializing gdt...");
     gdt_init();
@@ -21,7 +21,11 @@ int kmain(unsigned int ebx){
     idt_init();
     info("finish setup idt...");
 
+    info("initializing paging...");
+    init_paging();
+    info("finish setup paging...");
 
-
+    fb_write(message, sizeof(message));
+    
     return ebx;
 }

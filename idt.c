@@ -4,11 +4,11 @@
 
 #include "serial.h"
 #include "keyboard.h"
-//#include "paging.h"
+#include "paging.h"
 
 #define INTERRUPTS_DESCRIPTOR_COUNT 256 
-#define INTERRUPTS_KEYBOARD 33 
-//#define INTERRUPTS_PAGING 14 
+#define INTERRUPTS_KEYBOARD         33 
+#define INTERRUPTS_PAGING           14
 
 struct IDTDescriptor idt_descriptors[INTERRUPTS_DESCRIPTOR_COUNT];
 struct IDT idt;
@@ -35,7 +35,7 @@ void interrupts_init_descriptor(int index, unsigned int address){
 
 void idt_init(void){
     interrupts_init_descriptor(INTERRUPTS_KEYBOARD, (unsigned int) interrupt_handler_33);
-    //interrupts_init_descriptor(INTERRUPTS_PAGING, (unsigned int) interrupt_handler_14);
+    interrupts_init_descriptor(INTERRUPTS_PAGING, (unsigned int) interrupt_handler_14);
 
     idt.address = (int) &idt_descriptors;
     idt.size = sizeof(struct IDTDescriptor) * INTERRUPTS_DESCRIPTOR_COUNT;
@@ -74,9 +74,10 @@ unsigned int interrupt, __attribute__((unused)) struct stack_state stack){
 
             break;
         
-        //case INTERRUPTS_PAGING:
-        //    page_fault();    
-        //    break;
+        case INTERRUPTS_PAGING:
+            handle_page_fault();
+            pic_acknowledge(interrupt);
+            break;
         default:
             break;
     }

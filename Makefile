@@ -1,8 +1,8 @@
-OBJECTS = 	gdt.o lgdt.o loader.o io.o serial.o fb.o kmain.o keyboard.o	\
-			lidt.o interrupt_handler.o idt.o	pic.o
+OBJECTS = 	multiboot.o gdt.o lgdt.o loader.o io.o serial.o fb.o kmain.o keyboard.o	\
+			lidt.o interrupt_handler.o idt.o	pic.o common.o paging.o kheap.o enable_paging.o
 CC = gcc
-CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
-		-nostartfiles -nodefaultlibs -Wall -Wextra -Werror -c
+CFLAGS = 	-m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
+			-nostartfiles -nodefaultlibs -Wall -Wextra -Werror -c -DDEBUG=3
 LDFLAGS = -T link.ld -melf_i386
 AS = nasm
 ASFLAGS = -f elf 
