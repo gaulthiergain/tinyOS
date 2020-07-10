@@ -1,11 +1,7 @@
 #ifndef _FB_H
 #define _FB_H
 
-#define FB_COMMAND_PORT     0x3D4
-#define FB_DATA_PORT        0x3D5
-
-#define FB_HIGH_BYTE_CMD    14
-#define FB_LOW_BYTE_CMD     15
+#include "common.h"
 
 #define FB_BLACK            0
 #define FB_BLUE             1
@@ -13,7 +9,7 @@
 #define FB_CYAN             3
 #define FB_RED              4
 #define FB_MAGENTA          5
-#define FB_BROWN            6            
+#define FB_BROWN            6
 #define FB_LIGHT_GREY       7
 #define FB_DARK_GREY        8
 #define FB_LIGHT_BLUE       9
@@ -24,18 +20,45 @@
 #define FB_LIGHT_BROWN      14
 #define FB_WHITE            15
 
-#define FB_TERM_HEIGHT      24
-#define FB_TERM_WIDTH       80
-#define FB_NUM_CELLS        (FB_TERM_WIDTH * FB_TERM_HEIGHT)
+/* The Framebuffer I/O ports */
+#define FB_COMMAND_PORT     0x3D4
+#define FB_DATA_PORT        0x3D5
 
-struct framebuffer{
-    char        c;
-    unsigned char   colors;
-} __attribute__((packed));
+/* The Framebuffer I/O port commands */
+#define FB_HIGH_BYTE_COMMAND    14
+#define FB_LOW_BYTE_COMMAND     15
 
-void fb_init(void);
-void fb_clean_screen(void);
-void fb_change_color(unsigned char fg, unsigned char bg); 
-void fb_write(unsigned char *buf, unsigned short len);
+/**
+ * fb_write_cell:
+ * Writes a character with the given foreground and background to position i
+ * within the frame buffer.
+ * fb and bg must be between 0 and 15
+ * i must be between 0 and 80*25 = 2000
+ */
+void fb_write_cell(short i, char c, unsigned char fg, unsigned char bg);
 
-#endif /* _FB_H */
+/**
+ * fb_move_cursor
+ * Moves cursor forwarded int he frame buffer by pos characters
+ */
+void fb_move_cursor(unsigned short pos);
+
+/**
+ * fb_write
+ * Writes c-string to framebuffer and advances cursor len number of characters
+ * if len is not passed, string must be null terminated
+ */
+void fb_write(char *buf, unsigned int len);
+void fb_write_str(char *buf);
+
+/**
+ * fb_clear
+ * clear the screen
+ */
+void fb_clear();
+void fb_clear_row(u8int row);
+void fb_shift_up();
+void fb_wrap_vertical();
+void fb_newline();
+
+#endif

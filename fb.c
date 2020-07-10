@@ -1,56 +1,106 @@
-#include "fb.h"
 #include "io.h"
+#include "fb.h"
 
-static struct framebuffer *fb 		=	{0};
-static unsigned char curr_color 	=	FB_BLACK | FB_WHITE;
-static unsigned short cursor_idx 	=	0;
+#define FRAMEBUFFER_ADDR 0x000B8000;
+#define FB_WIDTH 80
+#define FB_HEIGHT 25
+#define TAB "  "
 
+static unsigned int fb_pos_x = 0;
+static unsigned int fb_pos_y = 0;
 
-static void fb_write_cell(unsigned int i, char c, unsigned char fg, unsigned char bg){
-	fb[i].c = c;
-	fb[i].colors = (((fg & 0x0F) << 4) | (bg & 0x0F)); 
+/**
+ * fb_write_cell:
+ * Writes a character with the given foreground and background to position i
+ * within the frame buffer.
+ * fb and bg must be between 0 and 15
+ * i must be between 0 and 80*25 = 2000
+ */
+void fb_write_cell(short i, char c, unsigned char fg, unsigned char bg) {
+    unsigned char *fb = (unsigned char*)FRAMEBUFFER_ADDR;
+    fb[i * 2] = c;
+    fb[i * 2 + 1] = ((bg & 0x0f) << 4) | (fg & 0x0f);
 }
 
-static void fb_move_cursor(unsigned char pos){
-	outb(FB_COMMAND_PORT, FB_HIGH_BYTE_CMD);
-	outb(FB_DATA_PORT, ((pos >> 8) & 0x00FF));
-	outb(FB_COMMAND_PORT, FB_LOW_BYTE_CMD);
-	outb(FB_DATA_PORT, pos & 0x00FF);
+void fb_move_cursor(unsigned short pos) {
+    outb(FB_COMMAND_PORT, FB_HIGH_BYTE_COMMAND);
+    outb(FB_DATA_PORT, ((pos >> 8) & 0x00FF));
+    outb(FB_COMMAND_PORT, FB_LOW_BYTE_COMMAND);
+    outb(FB_DATA_PORT, pos & 0x00FF);
 }
 
-void fb_init(void){
-	fb = (struct framebuffer *) 0x000B8000;
+// move cursor to next line
+//
+void fb_newline() {
+    if (fb_pos_y >= FB_HEIGHT-1)
+        fb_shift_up();
+    else
+        fb_pos_y++;
+
+    fb_pos_x = 0;
+    fb_move_cursor(fb_pos_x + (fb_pos_y * FB_WIDTH));
 }
 
-void fb_clean_screen(void){
-	unsigned int i;
-	unsigned char buf[] = " ";
-	fb_move_cursor(0);
-	for (i = 0; i < FB_NUM_CELLS; ++i){
-		fb_write_cell(cursor_idx, buf[0], FB_BLACK, FB_WHITE);
-		cursor_idx++;
-	}
-	cursor_idx = 0;
-	fb_move_cursor(cursor_idx);
+// advances cursor forward one character
+// if at end of line, wrap to next line
+void fb_advance_pos() {
+    if (fb_pos_x >= FB_WIDTH - 1)
+        fb_newline();
+    else
+        fb_pos_x++;
+
+    fb_move_cursor(fb_pos_x + (fb_pos_y * FB_WIDTH));
 }
 
-void fb_change_color(unsigned char fg, unsigned char bg){
-	curr_color &= (fg | bg);
-}
-
-void fb_write(unsigned char *buf, unsigned short len){
-	unsigned int i;
-	unsigned char fg = curr_color & 0xF0;
-	unsigned char bg = curr_color & 0x0F;
-	for (i = 0; i < len; ++i){
-        if (buf[i] == '\n'){
-            cursor_idx += FB_TERM_WIDTH;
-            cursor_idx -= (cursor_idx % FB_TERM_WIDTH);
-            cursor_idx--;
-        }else{
-            fb_write_cell(cursor_idx, buf[i], fg, bg);
-            cursor_idx = (cursor_idx + 1) % FB_NUM_CELLS;
+void fb_write(char *buf, unsigned int len) {
+    unsigned int i;
+    u16int pos;
+    for (i = 0; i < len; i++) {
+        char c = buf[i];
+        if (c == '\n' || c == '\r') {
+        fb_newline();
+        } else if (c == '\t') {
+            fb_write_str(TAB);
+        } else {
+        pos = fb_pos_x + (fb_pos_y * FB_WIDTH);
+            fb_write_cell(pos, c, FB_WHITE, FB_BLACK);
+            fb_advance_pos();
         }
-	}
-	fb_move_cursor(cursor_idx - 1);
+    }
+}
+
+void fb_write_str(char *buf) {
+    fb_write(buf, strlen(buf));
+}
+
+void fb_clear() {
+    fb_pos_x = 0;
+    fb_pos_y = 0;
+
+    int i;
+    for (i=0; i<FB_WIDTH*FB_HEIGHT; i++) {
+        fb_write_cell(i, ' ', FB_WHITE, FB_BLACK);
+    }
+    fb_move_cursor(0);
+}
+
+void fb_clear_row(u8int row) {
+    size_t i;
+    for (i = 0; i < FB_WIDTH; i++) {
+        fb_write_cell((row * FB_WIDTH)+i, ' ', FB_WHITE, FB_BLACK);
+    }
+}
+
+void fb_shift_up() {
+    // use 16-bits here because each cell is 16-bits wide
+    // this makes the pointer arithmetic work out correctly here
+    u16int *fb = (u16int*) FRAMEBUFFER_ADDR;
+    memmove(fb, fb + FB_WIDTH, FB_WIDTH *2 * (FB_HEIGHT * 2 - 1));
+    fb_clear_row(FB_HEIGHT - 1);
+}
+
+void fb_wrap_vertical() {
+    fb_pos_y = 0;
+    fb_clear_row(fb_pos_y);
+    fb_move_cursor(0);
 }
