@@ -1,5 +1,5 @@
-#ifndef _INTERRUPT
-#define _INTERRUPT
+#ifndef _IDT_H
+#define _IDT_H
 
 struct IDT {
     unsigned short size;
@@ -17,7 +17,7 @@ struct IDTDescriptor {
     unsigned short offset_high;     // offset bits 16..31
 } __attribute__((packed));
 
-void interrupts_install_idt();
+void idt_init(void);
 
 // Wrappers around ASM.
 void load_idt(unsigned int idt_address);
@@ -43,4 +43,4 @@ struct stack_state {
 
 void interrupt_handler(struct cpu_state cpu, unsigned int interrupt, struct stack_state stack);
 
-#endif /* _INTERRUPT */
+#endif /* _IDT_H */

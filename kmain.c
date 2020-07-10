@@ -1,7 +1,7 @@
 #include "serial.h"
 #include "fb.h"
 #include "gdt.h"
-#include "interrupt.h"
+#include "idt.h"
 
 int kmain(unsigned int ebx){
     unsigned char message[] = "ToysKernel";
@@ -13,7 +13,7 @@ int kmain(unsigned int ebx){
     fb_write(message, sizeof(message));
     
     gdt_init();
-    interrupts_install_idt();
+    idt_init();
 
     return ebx;
 }

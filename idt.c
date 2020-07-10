@@ -1,4 +1,4 @@
-#include "interrupt.h"
+#include "idt.h"
 #include "pic.h"
 #include "io.h"
 
@@ -33,7 +33,7 @@ void interrupts_init_descriptor(int index, unsigned int address){
                                                 0xe;                        // 0b1110=0xE 32-bit interrupt gate
 }
 
-void interrupts_install_idt(){
+void idt_init(void){
     interrupts_init_descriptor(INTERRUPTS_KEYBOARD, (unsigned int) interrupt_handler_33);
     //interrupts_init_descriptor(INTERRUPTS_PAGING, (unsigned int) interrupt_handler_14);
 

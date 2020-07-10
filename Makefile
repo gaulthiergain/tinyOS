@@ -1,5 +1,5 @@
 OBJECTS = 	gdt.o lgdt.o loader.o io.o serial.o fb.o kmain.o keyboard.o	\
-			lidt.o interrupt_handler.o interrupt.o	pic.o
+			lidt.o interrupt_handler.o idt.o	pic.o
 CC = gcc
 CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
 		-nostartfiles -nodefaultlibs -Wall -Wextra -Werror -c
