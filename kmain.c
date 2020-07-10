@@ -7,7 +7,7 @@
 #include "common.h"
 
 int kmain(unsigned int ebx){
-    char message[] = "tinyKernel\n";
+    char message[] = "tinyOS\n";
     
     serial_init();
 
