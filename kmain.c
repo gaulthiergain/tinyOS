@@ -4,13 +4,14 @@
 #include "interrupt.h"
 
 int kmain(unsigned int ebx){
-    unsigned char message[] = "GauOS";
+    unsigned char message[] = "ToysKernel";
     
+    serial_init();
+
     fb_init();
     fb_clean_screen();
     fb_write(message, sizeof(message));
-    //serial_init();
-    //serial_write(message, sizeof(message));
+    
     gdt_init();
     interrupts_install_idt();
 

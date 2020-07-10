@@ -1,5 +1,5 @@
 megs:               32
-display_library:    x
+display_library:    x, options="gui_debug"
 romimage:           file=/usr/share/bochs/BIOS-bochs-latest
 vgaromimage:        file=/usr/share/bochs/VGABIOS-lgpl-latest
 ata0-master:        type=cdrom, path=os.iso, status=inserted
@@ -8,4 +8,5 @@ log:                bochslog.txt
 clock:              sync=realtime, time0=local
 cpu:                count=1, ips=1000000
 plugin_ctrl:        speaker=0
+magic_break:        enabled=1
 com1:               enabled=1, mode=file, dev=com1.out
