@@ -19,3 +19,10 @@ This code requires `bochs` or `qemu` as emulator(s).
 - `cd ~/path/to/repo`
 - `make`
 - `make run` for qemu or `make run-bochs` for bochs
+
+## References
+
+- <http://www.jamesmolloy.co.uk/tutorial_html/6.-Paging.html>
+- <https://littleosbook.github.io/#linking-the-kernel>
+- <https://github.com/mgadda/littleos>
+- <https://github.com/MayankMurali/Creating-a-Little-Operating-System>
