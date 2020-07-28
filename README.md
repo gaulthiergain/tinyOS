@@ -22,7 +22,7 @@ This code requires `bochs` or `qemu` as emulator(s).
 
 ## References
 
-- <http://www.jamesmolloy.co.uk/tutorial_html/6.-Paging.html>
-- <https://littleosbook.github.io/#linking-the-kernel>
+- <http://www.jamesmolloy.co.uk/tutorial_html/
+- <https://littleosbook.github.io/
 - <https://github.com/mgadda/littleos>
 - <https://github.com/MayankMurali/Creating-a-Little-Operating-System>
